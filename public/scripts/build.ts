@@ -10,11 +10,13 @@ dotenv.config();
  * ビルドスクリプト
  * 指定されたターゲットフォルダの内容をビルドディレクトリにコピーし、必要な置換を行います。
  *
- * @param targetFolder - 対象のフォルダパス（例: "saiamtest.com/1pkl"）
+ * @param tagetDomain
+ * @param pageFolder
  */
-async function runBuild(targetFolder: string): Promise<void> {
+async function runBuild(tagetDomain: string, pageFolder: string): Promise<void> {
     try {
         // 例：saiamtest.com/1pkl
+        const targetFolder = path.join(tagetDomain, pageFolder);
 
         const baseDir = path.resolve(__dirname, '../../public/domain/', targetFolder);
         const r2BaseUrl = process.env.R2_PUBLIC_URL; // 環境変数から取得
@@ -38,7 +40,7 @@ async function runBuild(targetFolder: string): Promise<void> {
 
         // utilsフォルダもコピー
         const utilsDir = path.resolve(__dirname, './utils');
-        const buildUtilsDir = path.resolve(buildDir, 'utils');
+        const buildUtilsDir = path.resolve(__dirname, '../../build/', tagetDomain, 'utils');
         await fs.ensureDir(buildUtilsDir);
         await fs.copy(utilsDir, buildUtilsDir, {
             filter: (src) => !src.includes('node_modules') && !src.includes('build')
@@ -48,7 +50,6 @@ async function runBuild(targetFolder: string): Promise<void> {
         await replace.replaceInFile({
             files: path.join(buildDir, '**/index.html'),
             from: /window\.UTILS_PATH\s*=\s*['"`][^'"`]*['"`];/g,
-//            to: `window.UTILS_PATH = '/${targetFolder}/utils/js/';`,
             to: `window.UTILS_PATH = '/utils/js/';`,
         });
 
@@ -62,7 +63,6 @@ async function runBuild(targetFolder: string): Promise<void> {
                 return `src="${r2BaseUrl}/${targetFolder}/${folder ? folder + '/' : ''}`;
             }
         });
-        //to: `src="${r2BaseUrl}/${targetFolder}/pc/`,
 
         // css内の../images/パスもR2のURLに置換
         await replace.replaceInFile({
@@ -83,4 +83,4 @@ async function runBuild(targetFolder: string): Promise<void> {
     }
 }
 
-runBuild("saiamtest.com/1pkl").then();
+runBuild("saiamtest.com", "1pkl").then();
