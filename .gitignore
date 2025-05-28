@@ -7,3 +7,5 @@ images/
 node_modules/
 
 build/
+
+.env
