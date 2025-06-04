@@ -4,7 +4,8 @@
   "description": "sai",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx ts-node public/scripts/build.ts"
+    "build": "npx ts-node public/scripts/build.ts",
+    "deploy-r2-images": "npx ts-node public/scripts/deploy-r2-images.ts"
   },
   "keywords": [],
   "author": "",
