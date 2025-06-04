@@ -83,4 +83,14 @@ async function runBuild(tagetDomain: string, pageFolder: string): Promise<void> 
     }
 }
 
-runBuild("saiamtest.com", "1pkl").then();
+// コマンドライン引数を取得
+const [targetDomain, pageFolder] = process.argv.slice(2);
+
+if (!targetDomain || !pageFolder) {
+    console.error('エラー: targetDomain と pageFolder を引数として指定してください。');
+    console.log('使用法: ts-node public/scripts/build.ts <targetDomain> <pageFolder>');
+    console.log('例: ts-node public/scripts/build.ts saiamtest.com 1pkl');
+    process.exit(1);
+}
+
+runBuild(targetDomain, pageFolder).then();
